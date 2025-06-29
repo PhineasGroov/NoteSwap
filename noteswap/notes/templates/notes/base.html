@@ -10,9 +10,18 @@
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="#">NoteSwap</a>
+    <div class="container">
+        <a class="navbar-brand" href="#">NoteSwap</a>
+        <div class="ms-auto">
+        {% if user.is_authenticated %}
+            <span class="me-2 text-white">Bonjour, {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Déconnexion</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm me-2">Connexion</a>
+            <a href="{% url 'register' %}" class="btn btn-light btn-sm">Inscription</a>
+        {% endif %}
         </div>
+    </div>
     </nav>
     <div class="container">
         {% block content %}{% endblock %}
