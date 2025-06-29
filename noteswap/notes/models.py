@@ -12,6 +12,7 @@ class Note(models.Model):
     course = models.CharField(max_length=100)
     semester = models.CharField(max_length=50)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    id = models.AutoField(primary_key=True)  # Explicitly define the primary key if needed
 
     def __str__(self):
         return self.title
@@ -19,7 +20,7 @@ class Note(models.Model):
 class NoteRating(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='ratings')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.PositiveSmallIntegerField()
+    value = models.PositiveSmallIntegerField()
 
     class Meta:
         unique_together = ('note', 'user')
@@ -27,7 +28,7 @@ class NoteRating(models.Model):
 class NoteComment(models.Model):
     note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.TextField()
+    text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
