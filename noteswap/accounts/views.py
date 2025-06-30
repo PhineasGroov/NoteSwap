@@ -4,6 +4,9 @@ from .models import Profile
 from django.contrib.auth.forms import UserChangeForm
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import logout
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 class ProfileForm(forms.ModelForm):
     class Meta:
@@ -32,3 +35,8 @@ def profile(request):
     else:
         form = ProfileForm(instance=profile)
     return render(request, 'accounts/profile.html', {'form': form, 'profile': profile})
+
+@require_POST
+def ajax_logout(request):
+    logout(request)
+    return JsonResponse({'success': True})

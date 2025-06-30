@@ -1,0 +1,9 @@
+{% extends "notes/base.html" %}
+{% block content %}
+<div class="text-center py-5">
+  <h1 class="display-4 mb-4">Bienvenue sur NoteSwap !</h1>
+  <p class="lead mb-4">Partagez, trouvez et téléchargez les meilleures notes de cours entre étudiants.</p>
+  <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-2">Connexion</a>
+  <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg">Créer un compte</a>
+</div>
+{% endblock %}
