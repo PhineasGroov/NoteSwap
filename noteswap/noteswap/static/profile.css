@@ -1,0 +1,28 @@
+.profile-avatar {
+  transition: transform 0.3s cubic-bezier(.4,2,.6,1), box-shadow 0.3s;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+.profile-avatar:hover {
+  transform: scale(1.07) rotate(-2deg);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+.profile-card {
+  animation: fadeInUp 0.7s cubic-bezier(.4,2,.6,1);
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+.profile-social i {
+  transition: color 0.2s, transform 0.2s;
+}
+.profile-social i:hover {
+  color: #0d6efd !important;
+  transform: scale(1.2) rotate(-8deg);
+}
+.profile-form label {
+  font-weight: 500;
+}
+.profile-form input[type="file"] {
+  padding: 6px 0;
+}

@@ -54,6 +54,48 @@
       <ul id="notesList" class="list-group"></ul>
     </div>
   </div>
+
+  <!-- Modal pour édition -->
+  <div class="modal fade" id="editNoteModal" tabindex="-1" aria-labelledby="editNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="editNoteForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editNoteModalLabel">Modifier la note</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="note_id" id="editNoteId">
+            <div class="mb-3">
+              <label for="editTitle" class="form-label">Titre</label>
+              <input type="text" class="form-control" name="title" id="editTitle" required>
+            </div>
+            <div class="mb-3">
+              <label for="editSubject" class="form-label">Sujet</label>
+              <input type="text" class="form-control" name="subject" id="editSubject" required>
+            </div>
+            <div class="mb-3">
+              <label for="editCourse" class="form-label">Cours</label>
+              <input type="text" class="form-control" name="course" id="editCourse" required>
+            </div>
+            <div class="mb-3">
+              <label for="editSemester" class="form-label">Semestre</label>
+              <input type="text" class="form-control" name="semester" id="editSemester" required>
+            </div>
+            <div class="mb-3">
+              <label for="editFile" class="form-label">Fichier (laisser vide pour ne pas changer)</label>
+              <input type="file" class="form-control" name="file" id="editFile">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script>
     // CSRF token setup for AJAX
     function getCookie(name) {
@@ -70,7 +112,10 @@
       }
       return cookieValue;
     }
-    const csrftoken = getCookie('csrftoken');
+    
+
+    // Ajoute le nom de l'utilisateur connecté pour l'affichage des boutons
+    const currentUser = "{{ user.username }}";
 
     // Fetch and render notes
     function loadNotes(params = {}) {
@@ -92,31 +137,42 @@
           } else {
             data.notes.forEach(note => {
               notesList.innerHTML += `
-                <li class="list-group-item mb-2">
-                  <div class="fw-bold">${note.title}</div>
+                <li class="list-group-item mb-2" data-note-id="${note.id}">
+                  <div class="fw-bold note-title">${note.title}</div>
+                  <div class="note-subject d-none">${note.subject}</div>
+                  <div class="note-course d-none">${note.course}</div>
+                  <div class="note-semester d-none">${note.semester}</div>
                   <div class="text-muted small mb-1">
-                    ${note.subject} | ${note.course} | ${note.semester}
+                    <span class="badge bg-primary">${note.subject}</span>
+                    <span class="badge bg-info text-dark">${note.course}</span>
+                    <span class="badge bg-secondary">${note.semester}</span>
                   </div>
                   <div class="mb-1">
                     Uploaded by <span class="fw-semibold">${note.uploader}</span> on ${note.uploaded_at}
                   </div>
                   <a href="${note.file_url}" class="btn btn-sm btn-outline-primary" target="_blank">Download</a>
+                  ${note.uploader === currentUser ? `
+                    <button class="btn btn-sm btn-outline-secondary me-1 edit-note-btn" data-id="${note.id}">Modifier</button>
+                    <button class="btn btn-sm btn-outline-danger delete-note-btn" data-id="${note.id}">Supprimer</button>
+                  ` : ''}
                   <div class="mt-2">
                     <span>Rate: </span>
                     <span class="star-rating" data-note="${note.id}">
                       ${[1,2,3,4,5].map(star => `<i class="bi bi-star" data-value="${star}"></i>`).join('')}
                     </span>
-                    <span class="avg-rating" id="avg-rating-${note.id}"></span>
                     <span class="avg-rating" id="avg-rating-${note.id}">Avg: ${note.avg_rating.toFixed(1)}</span>
                   </div>
-                  <div class="mt-2">
+                  <button class="btn btn-link btn-sm toggle-comments" type="button" data-bs-toggle="collapse" data-bs-target="#comments-${note.id}">
+                    <i class="bi bi-chat-dots"></i> Commentaires
+                  </button>
+                  <div class="collapse mt-2" id="comments-${note.id}">
                     <form class="comment-form" data-note="${note.id}">
-                      <div class="input-group input-group-sm">
-                        <input type="text" class="form-control" name="text" placeholder="Add a comment...">
-                        <button class="btn btn-outline-secondary" type="submit">Post</button>
+                      <div class="input-group input-group-sm mb-2">
+                        <input type="text" class="form-control" name="text" placeholder="Ajouter un commentaire...">
+                        <button class="btn btn-outline-secondary" type="submit">Poster</button>
                       </div>
                     </form>
-                    <ul class="comments-list" id="comments-${note.id}">
+                    <ul class="comments-list">
                       ${note.comments.map(c => `<li class='text-break'><b>${c.user}</b>: ${c.text} <span class="text-muted small">(${c.created_at})</span></li>`).join('')}
                     </ul>
                   </div>
@@ -211,6 +267,61 @@
           }
         });
       }
+    });
+
+    // Suppression AJAX
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('delete-note-btn')) {
+        const noteId = e.target.dataset.id;
+        if (confirm("Supprimer cette note ?")) {
+          fetch(`/notes/api/note/${noteId}/delete/`, {
+            method: 'POST',
+            headers: {'X-CSRFToken': csrftoken}
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              loadNotes();
+            }
+          });
+        }
+      }
+    });
+
+    // Pré-remplir la modale d'édition
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('edit-note-btn')) {
+        const noteId = e.target.dataset.id;
+        const noteElem = e.target.closest('li');
+        document.getElementById('editNoteId').value = noteId;
+        document.getElementById('editTitle').value = noteElem.querySelector('.note-title').textContent;
+        document.getElementById('editSubject').value = noteElem.querySelector('.note-subject').textContent;
+        document.getElementById('editCourse').value = noteElem.querySelector('.note-course').textContent;
+        document.getElementById('editSemester').value = noteElem.querySelector('.note-semester').textContent;
+        var editModal = new bootstrap.Modal(document.getElementById('editNoteModal'));
+        editModal.show();
+      }
+    });
+
+    // Soumission AJAX du formulaire d'édition
+    document.getElementById('editNoteForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const noteId = document.getElementById('editNoteId').value;
+      const formData = new FormData(this);
+      fetch(`/notes/api/note/${noteId}/edit/`, {
+        method: 'POST',
+        headers: {'X-CSRFToken': csrftoken},
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          bootstrap.Modal.getInstance(document.getElementById('editNoteModal')).hide();
+          loadNotes();
+        } else {
+          alert("Erreur : " + JSON.stringify(data.errors));
+        }
+      });
     });
 
     // Initial load

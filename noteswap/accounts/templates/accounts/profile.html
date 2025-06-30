@@ -1,0 +1,112 @@
+<!-- filepath: [profile.html](http://_vscodecontentref_/0) -->
+{% extends "notes/base.html" %}
+{% load static widget_tweaks %}
+{% block content %}
+<section style="background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%); min-height:100vh;">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col">
+        <nav aria-label="breadcrumb" class="bg-white rounded-3 p-3 mb-4 shadow-sm">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'note_list' %}">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="#">Utilisateur</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Profil</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="card mb-4 profile-card shadow-sm border-0">
+          <div class="card-body text-center">
+            {% if profile.avatar %}
+              <img src="{{ profile.avatar.url }}" alt="avatar" class="rounded-circle img-fluid border border-3 border-primary shadow profile-avatar mb-3" style="width: 150px; height: 150px; object-fit:cover;">
+            {% else %}
+              <div class="rounded-circle bg-gradient d-flex align-items-center justify-content-center mx-auto mb-3 profile-avatar" style="width:150px; height:150px; background:linear-gradient(135deg,#6366f1,#60a5fa);">
+                <span class="text-white fs-1">{{ user.username|first|upper }}</span>
+              </div>
+            {% endif %}
+            <h4 class="my-2 fw-bold">{{ user.username }}</h4>
+            <p class="text-muted mb-1">{% if profile.bio %}{{ profile.bio }}{% else %}Bienvenue sur NoteSwap !{% endif %}</p>
+            <p class="text-muted mb-3 small">{{ user.email }}</p>
+            <div class="d-flex justify-content-center gap-2 mb-2 profile-social">
+              <a href="#" class="text-dark"><i class="fab fa-github fa-lg"></i></a>
+              <a href="#" class="text-info"><i class="fab fa-twitter fa-lg"></i></a>
+              <a href="#" class="text-danger"><i class="fab fa-instagram fa-lg"></i></a>
+              <a href="#" class="text-primary"><i class="fab fa-facebook fa-lg"></i></a>
+            </div>
+            <a href="{% url 'logout' %}" class="btn btn-outline-primary btn-sm mt-2">Déconnexion</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card mb-4 profile-card shadow-sm border-0">
+          <div class="card-body">
+            <h4 class="mb-4 fw-semibold">Modifier mon profil</h4>
+            <form method="post" enctype="multipart/form-data" class="profile-form">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="id_avatar" class="form-label">Changer l'avatar</label>
+                {{ form.avatar|add_class:"form-control" }}
+              </div>
+              <div class="mb-3">
+                <label for="id_bio" class="form-label">Bio</label>
+                {{ form.bio|add_class:"form-control" }}
+              </div>
+              <button type="submit" class="btn btn-primary px-4 shadow-sm">Mettre à jour</button>
+            </form>
+          </div>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="card mb-4 mb-md-0 shadow-sm border-0 profile-card">
+              <div class="card-body">
+                <p class="mb-4"><span class="text-primary font-italic me-1">Progression</span> de partage</p>
+                <p class="mb-1" style="font-size: .9rem;">Notes partagées</p>
+                <div class="progress rounded mb-3" style="height: 7px;">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: 80%" aria-valuenow="80"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p class="mb-1" style="font-size: .9rem;">Commentaires</p>
+                <div class="progress rounded mb-3" style="height: 7px;">
+                  <div class="progress-bar bg-info" role="progressbar" style="width: 60%" aria-valuenow="60"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <p class="mb-1" style="font-size: .9rem;">Badges</p>
+                <div class="progress rounded" style="height: 7px;">
+                  <div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card mb-4 mb-md-0 shadow-sm border-0 profile-card">
+              <div class="card-body">
+                <p class="mb-4"><span class="text-primary font-italic me-1">Statistiques</span> générales</p>
+                <div class="row text-center">
+                  <div class="col">
+                    <i class="bi bi-file-earmark-text fs-2 text-primary"></i>
+                    <div class="fw-bold">12</div>
+                    <div class="small text-muted">Notes</div>
+                  </div>
+                  <div class="col">
+                    <i class="bi bi-star fs-2 text-warning"></i>
+                    <div class="fw-bold">4.8</div>
+                    <div class="small text-muted">Moyenne</div>
+                  </div>
+                  <div class="col">
+                    <i class="bi bi-chat-dots fs-2 text-info"></i>
+                    <div class="fw-bold">34</div>
+                    <div class="small text-muted">Commentaires</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- end row -->
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

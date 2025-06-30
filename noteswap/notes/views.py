@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import NoteForm
 from .models import Note, NoteRating, NoteComment
@@ -9,6 +9,9 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.db import models
 from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse, HttpResponseForbidden
+from .forms import NoteForm
 import json
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -82,7 +85,7 @@ def upload_note(request):
         form = NoteForm()
     return render(request, 'notes/upload_note.html', {'form': form})
 
-
+@login_required
 def note_list(request):
     notes = Note.objects.all().order_by('-uploaded_at')
     return render(request, 'notes/note_list.html', {'notes': notes})
@@ -120,3 +123,29 @@ def comment_note(request, note_id):
             'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M')
         }
     })
+@login_required
+@require_POST
+def ajax_delete_note(request, note_id):
+    note = get_object_or_404(Note, id=note_id, uploader=request.user)
+    note.delete()
+    return JsonResponse({'success': True})
+
+@login_required
+@require_POST
+def ajax_edit_note(request, note_id):
+    note = get_object_or_404(Note, id=note_id, uploader=request.user)
+    form = NoteForm(request.POST, request.FILES, instance=note)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+
+def note_detail(request, note_id):
+    note = get_object_or_404(Note, id=note_id)
+    return render(request, 'notes/note_detail.html', {'note': note})
+
+def home(request):
+    if request.user.is_authenticated:
+        from django.shortcuts import redirect
+        return redirect('note_list')
+    return render(request, 'notes/home.html')
