@@ -1,9 +1,9 @@
 {% extends "notes/base.html" %}
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center fade-in">
   <div class="col-md-5">
     <div class="card p-4 shadow-sm">
-      <h2 class="mb-3">Inscription</h2>
+      <h2 class="mb-3 text-center">Inscription</h2>
       <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

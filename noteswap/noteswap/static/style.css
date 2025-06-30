@@ -1,0 +1,162 @@
+body {
+  background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+  min-height: 100vh;
+}
+.card {
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  transition: box-shadow 0.2s;
+}
+.card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+}
+.btn-primary, .btn-outline-primary {
+  border-radius: 2rem;
+  font-weight: 500;
+}
+input.form-control, textarea.form-control {
+  border-radius: 0.5rem;
+}
+.navbar {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.breadcrumb {
+  background: #fff;
+  border-radius: 0.5rem;
+}
+.list-group-item {
+  border-radius: 0.5rem !important;
+  margin-bottom: 0.5rem;
+}
+.profile-avatar {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.profile-avatar:hover {
+  transform: scale(1.07) rotate(-2deg);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+.fade-in {
+  animation: fadeInUp 0.7s cubic-bezier(.4,2,.6,1);
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+/* Light mode (default) */
+:root {
+  --bs-body-bg: #f8fafc;
+  --bs-body-color: #212529;
+  --bs-card-bg: #fff;
+  --bs-navbar-bg: #0d6efd;
+  --bs-card-color: #212529;
+}
+
+/* Dark mode overrides */
+body.dark-mode {
+  --bs-body-bg: #181a1b;
+  --bs-body-color: #e2e2e2;
+  --bs-card-bg: #23272b;
+  --bs-navbar-bg: #23272b;
+  --bs-card-color: #e2e2e2;
+  background: #181a1b !important;
+  color: var(--bs-body-color) !important;
+}
+body.dark-mode .card,
+body.dark-mode .modal-content {
+  background: var(--bs-card-bg) !important;
+  color: var(--bs-card-color) !important;
+}
+body.dark-mode .navbar,
+body.dark-mode .navbar.bg-primary {
+  background: var(--bs-navbar-bg) !important;
+}
+body.dark-mode .list-group-item {
+  background: #23272b !important;
+  color: #e2e2e2 !important;
+}
+body.dark-mode .btn-outline-light {
+  color: #e2e2e2 !important;
+  border-color: #e2e2e2 !important;
+}
+body.dark-mode .btn-outline-primary {
+  color: #e2e2e2 !important;
+  border-color: #e2e2e2 !important;
+}
+body.dark-mode .form-control {
+  background: #23272b !important;
+  color: #e2e2e2 !important;
+  border-color: #444;
+}
+body.dark-mode .breadcrumb {
+  background: #23272b !important;
+}
+body.dark-mode .modal-content {
+  background: #23272b !important;
+}
+body.dark-mode .progress,
+body.dark-mode .progress-bar {
+  background-color: #444 !important;
+}
+
+/* Ajoute ceci à la fin de style.css pour améliorer la lisibilité en dark mode */
+
+/* Texte général */
+body.dark-mode,
+body.dark-mode .card,
+body.dark-mode .modal-content,
+body.dark-mode .list-group-item,
+body.dark-mode .form-label,
+body.dark-mode .form-control,
+body.dark-mode .btn,
+body.dark-mode .btn-link,
+body.dark-mode .small,
+body.dark-mode .text-muted,
+body.dark-mode .fw-bold,
+body.dark-mode .fw-semibold {
+  color: #e2e2e2 !important;
+}
+
+/* Badges Bootstrap */
+body.dark-mode .badge.bg-primary,
+body.dark-mode .badge.bg-info,
+body.dark-mode .badge.bg-secondary {
+  color: #fff !important;
+  filter: brightness(1.2);
+}
+
+/* Liens */
+body.dark-mode a,
+body.dark-mode .btn-link {
+  color: #90cdf4 !important;
+}
+
+/* Placeholder dans les inputs */
+body.dark-mode .form-control::placeholder {
+  color: #b0b0b0 !important;
+  opacity: 1;
+}
+
+/* Bordures */
+body.dark-mode .form-control,
+body.dark-mode .btn,
+body.dark-mode .list-group-item {
+  border-color: #444 !important;
+}
+
+/* Pour les titres et labels */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode label {
+  color: #fff !important;
+}
+
+body.dark-mode .badge.bg-success,
+body.dark-mode .badge.bg-warning,
+body.dark-mode .badge.bg-danger {
+  color: #23272b !important;
+}

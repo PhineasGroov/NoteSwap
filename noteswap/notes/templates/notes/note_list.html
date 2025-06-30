@@ -143,7 +143,9 @@
                   <div class="note-course d-none">${note.course}</div>
                   <div class="note-semester d-none">${note.semester}</div>
                   <div class="text-muted small mb-1">
-                    ${note.subject} | ${note.course} | ${note.semester}
+                    <span class="badge bg-primary">${note.subject}</span>
+                    <span class="badge bg-info text-dark">${note.course}</span>
+                    <span class="badge bg-secondary">${note.semester}</span>
                   </div>
                   <div class="mb-1">
                     Uploaded by <span class="fw-semibold">${note.uploader}</span> on ${note.uploaded_at}
