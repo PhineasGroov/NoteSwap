@@ -48,6 +48,9 @@
           </div>
         </form>
       </div>
+      <div id="loadingSpinner" class="text-center my-3" style="display:none;">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
       <ul id="notesList" class="list-group"></ul>
     </div>
   </div>
@@ -76,11 +79,14 @@
         if (params[key]) url.searchParams.append(key, params[key]);
       });
 
+      document.getElementById('loadingSpinner').style.display = 'block';
+
       fetch(url)
         .then(response => response.json())
         .then(data => {
           const notesList = document.getElementById('notesList');
           notesList.innerHTML = '';
+          document.getElementById('loadingSpinner').style.display = 'none';
           if (data.notes.length === 0) {
             notesList.innerHTML = '<li class="list-group-item">No notes uploaded yet.</li>';
           } else {
@@ -101,6 +107,7 @@
                       ${[1,2,3,4,5].map(star => `<i class="bi bi-star" data-value="${star}"></i>`).join('')}
                     </span>
                     <span class="avg-rating" id="avg-rating-${note.id}"></span>
+                    <span class="avg-rating" id="avg-rating-${note.id}">Avg: ${note.avg_rating.toFixed(1)}</span>
                   </div>
                   <div class="mt-2">
                     <form class="comment-form" data-note="${note.id}">
@@ -109,7 +116,9 @@
                         <button class="btn btn-outline-secondary" type="submit">Post</button>
                       </div>
                     </form>
-                    <ul class="comments-list" id="comments-${note.id}"></ul>
+                    <ul class="comments-list" id="comments-${note.id}">
+                      ${note.comments.map(c => `<li class='text-break'><b>${c.user}</b>: ${c.text} <span class="text-muted small">(${c.created_at})</span></li>`).join('')}
+                    </ul>
                   </div>
                 </li>
               `;

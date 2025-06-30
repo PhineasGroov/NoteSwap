@@ -44,6 +44,15 @@ class NoteAPI(View):
                 'uploader': note.uploader.username,
                 'uploaded_at': note.uploaded_at.strftime('%Y-%m-%d %H:%M'),
                 'file_url': note.file.url,
+                'avg_rating': note.ratings.aggregate(models.Avg('value'))['value__avg'] or 0,
+                'comments': [
+                    {
+                        'user': comment.user.username,
+                        'text': comment.text,
+                        'created_at': comment.created_at.strftime('%Y-%m-%d %H:%M')
+                    }
+                    for comment in note.comments.order_by('created_at')
+                ]
             }
             for note in notes
         ]
